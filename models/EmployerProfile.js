@@ -1,6 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config.js';
 import User from './User.js';
+import Job from './Job.js';
 
 class EmployerProfile extends Model {}
 
@@ -65,6 +66,11 @@ EmployerProfile.init({
 }, {
   sequelize,
   modelName: 'EmployerProfile',
+});
+
+EmployerProfile.hasMany(Job, {
+  foreignKey: 'employerId',
+  as: 'jobs', // Define alias
 });
 
 // EmployerProfile.belongsTo(User, { foreignKey: 'userId' });

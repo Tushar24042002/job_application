@@ -3,6 +3,7 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config.js'; // Adjust path as per your structure
 import Industry from './Industry.js'; // Adjust path as per your structure
+import EmployerProfile from './EmployerProfile.js';
 
 class Job extends Model {}
 
@@ -16,7 +17,7 @@ Job.init({
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'EmployerProfile', // Name of the model
+      model: EmployerProfile,
       key: 'id',
     },
   },
@@ -43,8 +44,15 @@ Job.init({
   sequelize,
   modelName: 'Job',
 });
+
+Job.belongsTo(EmployerProfile, {
+  foreignKey: 'employerId',
+  as: 'employer', // Define alias
+});
+
 Job.belongsToMany(Industry, {
-  through: 'JobIndustry', // This is the name of the join table
+  through: 'JobIndustry',
   foreignKey: 'jobId',
 });
+
 export default Job;

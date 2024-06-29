@@ -1,28 +1,24 @@
-// associationService.js
-
 import Job from '../models/Job.js';
+import EmployerProfile from '../models/EmployerProfile.js';
 import Industry from '../models/Industry.js';
-import JobIndustry from '../models/JobIndustry.js';
-import sequelize from '../config.js';
 
-export const initializeAssociations = async () => {
-  try {
-    Job.belongsToMany(Industry, {
-      through: JobIndustry,
-      foreignKey: 'jobId',
-    });
+const setupAssociations = () => {
+  Job.belongsTo(EmployerProfile, {
+    foreignKey: 'employerId',
+    as: 'employer',
+  });
 
-    Industry.belongsToMany(Job, {
-      through: JobIndustry,
-      foreignKey: 'industryId',
-    });
+  EmployerProfile.hasMany(Job, {
+    foreignKey: 'employerId',
+    as: 'jobs',
+  });
 
-    // Sync models with associations
-    await sequelize.sync();
-    
-    console.log('Database synchronized successfully with associations.');
-  } catch (error) {
-    console.error('Unable to synchronize the database with associations:', error);
-    throw error;
-  }
+  Job.belongsToMany(Industry, {
+    through: 'JobIndustry',
+    foreignKey: 'jobId',
+  });
+
+  // Add other associations if needed
 };
+
+export default setupAssociations;
