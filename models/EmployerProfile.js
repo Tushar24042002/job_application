@@ -1,11 +1,7 @@
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes } from 'sequelize';
 import sequelize from '../config.js';
-import User from './User.js';
-import Job from './Job.js';
 
-class EmployerProfile extends Model {}
-
-EmployerProfile.init({
+const EmployerProfile = sequelize.define('EmployerProfile', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -14,7 +10,7 @@ EmployerProfile.init({
   userId: {
     type: DataTypes.INTEGER,
     references: {
-      model: User,
+      model: 'Users', // Refer to table name directly
       key: 'id',
     },
     allowNull: false,
@@ -63,15 +59,21 @@ EmployerProfile.init({
       }
     }
   },
+  employeeRange: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notNull: {
+        msg: "Employee Range is required"
+      },
+      notEmpty: {
+        msg: "Employee Range is required"
+      }
+    }
+  },
 }, {
   sequelize,
   modelName: 'EmployerProfile',
 });
 
-EmployerProfile.hasMany(Job, {
-  foreignKey: 'employerId',
-  as: 'jobs', // Define alias
-});
-
-// EmployerProfile.belongsTo(User, { foreignKey: 'userId' });
 export default EmployerProfile;

@@ -1,13 +1,8 @@
-// models/Job.js
+import { DataTypes } from 'sequelize';
+import sequelize from '../config.js';
+import Industry from './Industry.js';
 
-import { DataTypes, Model } from 'sequelize';
-import sequelize from '../config.js'; // Adjust path as per your structure
-import Industry from './Industry.js'; // Adjust path as per your structure
-import EmployerProfile from './EmployerProfile.js';
-
-class Job extends Model {}
-
-Job.init({
+const Job = sequelize.define('Job', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -17,7 +12,7 @@ Job.init({
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: EmployerProfile,
+      model: 'EmployerProfiles', // Refer to table name directly
       key: 'id',
     },
   },
@@ -27,7 +22,21 @@ Job.init({
   },
   description: {
     type: DataTypes.TEXT,
-  },
+    allowNull: false,
+    charset: 'utf8mb4', // Ensure UTF-8 encoding
+    collate: 'utf8mb4_unicode_ci',
+    get() {
+        const rawValue = this.getDataValue('description');
+        try {
+            return JSON.parse(rawValue);
+        } catch (error) {
+            return rawValue;
+        }
+    },
+    set(value) {
+        this.setDataValue('description', JSON.stringify(value));
+    }
+},
   requirements: {
     type: DataTypes.TEXT,
   },
@@ -43,11 +52,6 @@ Job.init({
 }, {
   sequelize,
   modelName: 'Job',
-});
-
-Job.belongsTo(EmployerProfile, {
-  foreignKey: 'employerId',
-  as: 'employer', // Define alias
 });
 
 Job.belongsToMany(Industry, {

@@ -10,10 +10,10 @@ JobIndustry.init({
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  industryId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
+  // industryId: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: false,
+  // },
 }, {
   sequelize,
   modelName: 'JobIndustry',

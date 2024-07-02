@@ -39,7 +39,7 @@ export const addJobProfile = async (req) => {
 
     const jobIndustryAssociations = industryIds.map((industryId) => ({
       jobId: job.id,
-      industryId,
+      IndustryId : industryId,
     }));
     await JobIndustry.bulkCreate(jobIndustryAssociations, { transaction });
     await transaction.commit();
@@ -52,14 +52,18 @@ export const addJobProfile = async (req) => {
   }
 };
 
+
 export const findAllJobs = async () => {
   return await Job.findAll({
+    attributes: {
+      exclude: ['employerId'] // Exclude employerId from the result
+    },
     include: [
       {
         model: EmployerProfile,
-        // id: Sequelize.col("Job.employerId"),
-        attributes: ['id', 'companyName'], 
-        
+        as: 'employer',
+        id: Sequelize.col("Job.employerId"),
+        attributes: ['id', 'companyName'],
       },
     ],
   });
