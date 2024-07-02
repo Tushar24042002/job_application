@@ -1,12 +1,15 @@
 import AWS from 'aws-sdk';
 import fs from 'fs';
 import path from 'path';
-import { aws_buecket_name, aws_access_secret_key, aws_access_key } from '../config/aws_credentials.js';
+
+import dotenv from "dotenv";
+
+dotenv.config();
 
 // Configure AWS with your access and secret key.
 AWS.config.update({
-    accessKeyId: aws_access_key,
-    secretAccessKey: aws_access_secret_key,
+    accessKeyId: process.env.aws_access_key,
+    secretAccessKey: process.env.aws_access_secret_key,
     region: 'eu-north-1'
 });
 
@@ -17,7 +20,7 @@ const s3 = new AWS.S3();
 export const uploadFile = (filePath, fileName) => {
     const fileContent = fs.readFileSync(filePath);
     const params = {
-        Bucket: aws_buecket_name,
+        Bucket: process.env.aws_buecket_name,
         Key: fileName, // File name you want to save as in S3
         Body: fileContent
     };
