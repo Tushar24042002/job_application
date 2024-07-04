@@ -3,6 +3,7 @@ import upload from "../config/upload.js";
 import JobSeeker from "../models/JobSeeker.js";
 import fs from 'fs';
 import { getCurrentUser } from "../services/user.service.js";
+import AppliedJob from "../models/AppliedJobs.js";
 
 
 const deleteFile = (filePath) => {
@@ -64,6 +65,10 @@ export const findJobSeekerById = async (id) => {
 }
 
 export const findJobSeekerByUserId = async (userId) => {
-  console.log(userId, "user dsta")
   return await JobSeeker.findOne({ where: { userId } });
+}
+
+
+export const findAllMyJobsByJobSeekerId= async(jobSeekerId)=>{
+return await AppliedJob.findAll({where :{jobSeekerId}});
 }

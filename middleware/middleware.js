@@ -4,7 +4,7 @@ export const isValidUser = (requiredRoles) => {
   return async (req, res, next) => {
     try {
       const user = await getCurrentUser(req, res);
-      console.log(user, "user")
+      console.log(user, "user", requiredRoles)
       if (user && requiredRoles.includes(user.role)) {
         next(); 
       } else {
