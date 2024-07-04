@@ -59,4 +59,6 @@ Job.belongsToMany(Industry, {
   foreignKey: 'jobId',
 });
 
+
+
 export default Job;
