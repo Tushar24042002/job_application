@@ -40,7 +40,7 @@ export const addJobSeekerProfile = async (req, res) => {
     const fileName = `resumes/${uploadedFile.filename}`;
     const resumeUrl = await uploadFile(filePath, fileName);
     const user = await getCurrentUser(req, res);
-    await deleteFile(filePath);
+    // await deleteFile(filePath);
     const jobSeekerData = {
       ...req.body,
       resume: resumeUrl,
@@ -69,6 +69,6 @@ export const findJobSeekerByUserId = async (userId) => {
 }
 
 
-export const findAllMyJobsByJobSeekerId= async(jobSeekerId)=>{
-return await AppliedJob.findAll({where :{jobSeekerId}});
+export const findAllMyJobsByJobSeekerId = async (jobSeekerId) => {
+  return await AppliedJob.findAll({ where: { jobSeekerId } });
 }

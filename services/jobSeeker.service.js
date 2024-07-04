@@ -9,9 +9,9 @@ export const addJobSeeker = (req, res, next) => {
     })
     .catch((error) => {
       if (error.name === 'SequelizeValidationError') {
-        next(new CustomValidationError(error.errors));
+        throw new CustomValidationError(error.errors);
       } else {
-        next(error);
+        throw error;
       }
     });
 };
