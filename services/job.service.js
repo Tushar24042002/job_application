@@ -3,13 +3,13 @@ import { addJobProfile, findAllJobs, findJobById } from "../repository/job.repos
 
 export const addJob = async (req, res, next) => {
     try {
-        const newUser = await addJobProfile(req);
+        const newUser = await addJobProfile(req,res);
         res.status(201).json(newUser);
     } catch (error) {
         if (error.name === 'SequelizeValidationError') {
-            next(new CustomValidationError(error.errors));
+            throw new CustomValidationError(error.errors);
         } else {
-            next(error);
+            throw new CustomValidationError(error.errors);
         }
     }
 }

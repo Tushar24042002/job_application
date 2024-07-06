@@ -59,6 +59,18 @@ const EmployerProfile = sequelize.define('EmployerProfile', {
       }
     }
   },
+  employeeRange: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notNull: {
+        msg: "Employee Range is required"
+      },
+      notEmpty: {
+        msg: "Employee Range is required"
+      }
+    }
+  },
 }, {
   sequelize,
   modelName: 'EmployerProfile',

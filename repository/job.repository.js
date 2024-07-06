@@ -6,13 +6,14 @@ import Industry from "../models/Industry.js";
 import JobIndustry from "../models/JobIndustry.js";
 import EmployerProfile from "../models/EmployerProfile.js";
 import { Sequelize } from "sequelize";
+import { getCurrentUser } from "../services/user.service.js";
+import { findEmployerByUserId } from "../services/employer.service.js";
 
-export const addJobProfile = async (req) => {
+export const addJobProfile = async (req, res) => {
   const {
     title,
     description,
     requirements,
-    employerId,
     location,
     salary,
     type,
@@ -23,7 +24,11 @@ export const addJobProfile = async (req) => {
 
   try {
     // Create job profile
-
+    const user = await getCurrentUser(req, res);
+    console.log(user)
+    const employer = await findEmployerByUserId(req, res, user.id);
+    console.log(employer)
+    const employerId = employer.id;
     const job = await Job.create(
       {
         title,
@@ -39,7 +44,7 @@ export const addJobProfile = async (req) => {
 
     const jobIndustryAssociations = industryIds.map((industryId) => ({
       jobId: job.id,
-      industryId,
+      IndustryId: industryId,
     }));
     await JobIndustry.bulkCreate(jobIndustryAssociations, { transaction });
     await transaction.commit();
