@@ -36,3 +36,58 @@ export const getEmployerById= async(req, res)=>{
         res.status(500).json({ error: error.message });
     }
 }
+
+
+export const applyJob=async(req,res)=>{
+    const { jobId } = req.params;
+    try {
+        const jobSeeker = await findJobSeekerByUser(req,res);
+        console.log(jobSeeker,"js");
+        const data = await jobApply(jobId, jobSeeker.id);
+        console.log(data, "dagta")
+        res.status(200).json(data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+export const findJobSeekerByUser = async(req,res)=>{
+    try {
+        const user = await getCurrentUser(req,res);
+        console.log(user, "dms sbndfnvb sdmfnb sfm");
+        const jobSeeker = await findJobSeekerByUserId(user.id);
+        return jobSeeker;
+    } catch (error) {
+
+    }
+}
+
+
+export const getEmployerDashboard = async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.pageSize) || 10;
+    try {
+        const user = await getCurrentUser(req, res);
+        const employer = await findEmployerByUserId(user.id);
+        const dashboardData = await getEmployerJobs(employer.id, Number(page) || 1, Number(pageSize));
+        if (!dashboardData) {
+            throw new CustomValidationError([{ message: 'Employer not found' }]);
+        }
+        res.status(200).json(dashboardData);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+
+export const findEmployerByUserId = async (userId) => {
+    try {
+        const employer = EmployerProfile.findOne({ where: { userId } });
+        if (!employer) {
+            throw new CustomValidationError([{ message: 'Employer not found' }]);
+        }
+        return employer;
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}

@@ -9,12 +9,13 @@ import JobContoller from "./controllers/job.controller.js";
 import IndustryController from "./controllers/industry.controller.js";
 import JobSeekerController from "./controllers/jobSeeker.controller.js";
 import "./services/associationService.js";
+import cors from "cors";
 
 const app = express();
 const port = 5000;
 
 app.use(bodyParser.json());
-
+app.use(cors());
 
 
 app.use("/users", userController);

@@ -72,3 +72,10 @@ export const findAllJobs = async () => {
 export const findJobById = async (id) => {
   return await Job.findByPk(id);
 };
+
+export const jobApply = async (jobId, jobSeekerId) => {
+  const status = "pending";
+  console.log(jobId, jobSeekerId)
+  const data = await AppliedJob.create({ jobId, jobSeekerId, status });
+  return data;
+}
