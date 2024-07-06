@@ -22,21 +22,7 @@ const Job = sequelize.define('Job', {
   },
   description: {
     type: DataTypes.TEXT,
-    allowNull: false,
-    charset: 'utf8mb4', // Ensure UTF-8 encoding
-    collate: 'utf8mb4_unicode_ci',
-    get() {
-        const rawValue = this.getDataValue('description');
-        try {
-            return JSON.parse(rawValue);
-        } catch (error) {
-            return rawValue;
-        }
-    },
-    set(value) {
-        this.setDataValue('description', JSON.stringify(value));
-    }
-},
+  },
   requirements: {
     type: DataTypes.TEXT,
   },
@@ -58,7 +44,5 @@ Job.belongsToMany(Industry, {
   through: 'JobIndustry',
   foreignKey: 'jobId',
 });
-
-
 
 export default Job;

@@ -1,20 +1,11 @@
 import express from "express";
-import { addJob, applyJob, getAllJobs, getJobById } from "../services/job.service.js";
-import { isValidUser } from "../middleware/middleware.js";
-import { USER_ADMIN, USER_EMPLOYER, USER_JOB_SEEKER } from "../Consts.js";
+import { addJob, getAllJobs, getJobById } from "../services/job.service.js";
 const router = express.Router();
 
 
 // Route to create a new user
-router.post("/add", isValidUser([USER_ADMIN, USER_EMPLOYER]), (req, res) => {
-    addJob(req, res);
-  });
-
+router.post('/add', addJob);
 router.get("/", getAllJobs);
 router.get("/:id", getJobById);
-
-router.post("/apply-job/:jobId", isValidUser([USER_JOB_SEEKER]), (req, res)=>{
-  applyJob(req,res);
-})
 
 export default router;
