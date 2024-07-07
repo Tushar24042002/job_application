@@ -22,4 +22,3 @@ export const csvCreator= async(req, res, data)=>{
     });
   });
 };
-csvCreator();

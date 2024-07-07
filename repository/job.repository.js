@@ -75,8 +75,20 @@ export const findAllJobs = async () => {
 };
 
 export const findJobById = async (id) => {
-  return await Job.findByPk(id);
-};
+  return await Job.findByPk(id, {
+    attributes: {
+      exclude: ['employerId'] // Exclude employerId from the result
+    },
+    include: [
+      {
+        model: EmployerProfile,
+        as: 'employer', 
+        id: Sequelize.col("Job.employerId"),
+        attributes: ['id', 'companyName'],
+      },
+    ],
+  })
+  };
 
 export const jobApply = async (jobId, jobSeekerId) => {
   const status = "pending";
