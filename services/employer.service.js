@@ -53,16 +53,6 @@ export const applyJob=async(req,res)=>{
     }
 }
 
-export const findJobSeekerByUser = async(req,res)=>{
-    try {
-        const user = await getCurrentUser(req,res);
-        console.log(user, "dms sbndfnvb sdmfnb sfm");
-        const jobSeeker = await findJobSeekerByUserId(user.id);
-        return jobSeeker;
-    } catch (error) {
-
-    }
-}
 
 
 export const getEmployerDashboard = async (req, res) => {

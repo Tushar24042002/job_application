@@ -1,5 +1,6 @@
 import CustomValidationError from "../Exceptions/CustomException.js";
-import { addJobSeekerProfile, findAllJobSeekers, findJobSeekerById } from "../repository/jobSeeker.repository.js";
+import { addJobSeekerProfile, findAllJobSeekers, findJobSeekerById, findJobSeekerByUserId } from "../repository/jobSeeker.repository.js";
+import { getCurrentUser } from "./user.service.js";
 
 export const addJobSeeker = (req, res, next) => {
     addJobSeekerProfile(req, res)
@@ -9,9 +10,9 @@ export const addJobSeeker = (req, res, next) => {
       })
       .catch((error) => {
         if (error.name === 'SequelizeValidationError') {
-          next(new CustomValidationError(error.errors));
+          throw new CustomValidationError([{ message: 'Add Job Seeker' }]);
         } else {
-          next(error);
+          throw new CustomValidationError([{ message: 'Add Job Seeker' }]);
         }
       });
   };
@@ -21,7 +22,7 @@ export const getAllJobSeekers = async (req, res) => {
         const allUsers = await findAllJobSeekers();
         res.status(200).json(allUsers);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json([{ message: 'Employer profile not found' }]);
     }
 }
 
@@ -35,6 +36,16 @@ export const getJobSeekerById= async(req, res)=>{
         }
         res.status(200).json(employer);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json([{ message: 'Employer profile not found' }]);
     }
+}
+
+export const findJobSeekerFromRequest = async(req,res)=>{
+  try {
+      const user = await getCurrentUser(req,res);
+      const jobSeeker = await findJobSeekerByUserId(user.id);
+      return jobSeeker;
+  } catch (error) {
+
+  }
 }

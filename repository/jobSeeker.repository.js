@@ -59,3 +59,9 @@ export const findAllJobSeekers = async () => {
 export const findJobSeekerById = async (id) => {
   return await JobSeeker.findByPk(id);
 }
+
+
+
+export const findJobSeekerByUserId= async(userId)=>{
+  return await JobSeeker.findOne({where :{userId}})
+}

@@ -1,5 +1,6 @@
 import CustomValidationError from "../Exceptions/CustomException.js";
-import { addJobProfile, findAllJobs, findJobById } from "../repository/job.repository.js";
+import { addJobProfile, findAllJobs, findJobById, getAllJobSeekerAppliedJobs, jobApply } from "../repository/job.repository.js";
+import { findJobSeekerFromRequest } from "./jobSeeker.service.js";
 
 export const addJob = async (req, res, next) => {
     try {
@@ -24,14 +25,26 @@ export const getAllJobs = async (req, res) => {
 }
 
 
-export const getJobById= async(req, res)=>{
-    const empid = req.params.id;
+export const findAllJobSeekerAppliedJobs = async (req, res) => {
+    console.log("calling this one")
     try {
-        const employer = await findJobById(empid);
-        if (!employer) {
-            throw new CustomValidationError([{ message: 'Employer profile not found' }]);
+        const appliedJob = await getAllJobSeekerAppliedJobs(req,res);
+        res.status(200).json(appliedJob);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+
+export const getJobById= async(req, res)=>{
+    console.log("calling another")
+    const jobId = req.params.id;
+    try {
+        const job = await findJobById(jobId);
+        if (!job) {
+            throw new CustomValidationError([{ message: 'Job not found' }]);
         }
-        res.status(200).json(employer);
+        res.status(200).json(job);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -40,23 +53,12 @@ export const getJobById= async(req, res)=>{
 export const applyJob=async(req,res)=>{
     const { jobId } = req.params;
     try {
-        const jobSeeker = await findJobSeekerByUser(req,res);
-        console.log(jobSeeker,"js");
+        const jobSeeker = await findJobSeekerFromRequest(req,res);
+        console.log(jobSeeker)
         const data = await jobApply(jobId, jobSeeker.id);
-        console.log(data, "dagta")
         res.status(200).json(data);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
 
-export const findJobSeekerByUser = async(req,res)=>{
-    try {
-        const user = await getCurrentUser(req,res);
-        console.log(user, "dms sbndfnvb sdmfnb sfm");
-        const jobSeeker = await findJobSeekerByUserId(user.id);
-        return jobSeeker;
-    } catch (error) {
-
-    }
-}

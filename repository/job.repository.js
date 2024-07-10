@@ -8,6 +8,8 @@ import EmployerProfile from "../models/EmployerProfile.js";
 import { Sequelize } from "sequelize";
 import { getCurrentUser } from "../services/user.service.js";
 import { findEmployerByUserId } from "../services/employer.service.js";
+import AppliedJob from "../models/AppliedJobs.js";
+import { findJobSeekerFromRequest } from "../services/jobSeeker.service.js";
 
 export const addJobProfile = async (req, res) => {
   const {
@@ -66,7 +68,7 @@ export const findAllJobs = async () => {
     include: [
       {
         model: EmployerProfile,
-        as: 'employer', 
+        as: 'employer',
         id: Sequelize.col("Job.employerId"),
         attributes: ['id', 'companyName'],
       },
@@ -82,13 +84,13 @@ export const findJobById = async (id) => {
     include: [
       {
         model: EmployerProfile,
-        as: 'employer', 
+        as: 'employer',
         id: Sequelize.col("Job.employerId"),
         attributes: ['id', 'companyName'],
       },
     ],
   })
-  };
+};
 
 export const jobApply = async (jobId, jobSeekerId) => {
   const status = "pending";
@@ -96,3 +98,31 @@ export const jobApply = async (jobId, jobSeekerId) => {
   const data = await AppliedJob.create({ jobId, jobSeekerId, status });
   return data;
 }
+
+
+export const getAllJobSeekerAppliedJobs = async (req, res) => {
+  const jobSeeker = await findJobSeekerFromRequest(req, res);
+  const jobSeekerId = jobSeeker.id;
+  console.log(jobSeekerId);
+  return await AppliedJob.findAll({
+    where: { jobSeekerId },
+    attributes: {
+      exclude: ['jobSeekerId', 'jobId']
+    },
+    include: [
+      {
+        model: Job,
+        as: 'job',
+        id: Sequelize.col("AppliedJob.jobId"),
+        attributes: ['id', 'title', 'location'],
+        include: [
+          {
+            model: EmployerProfile,
+            as: 'employer',
+            userId: Sequelize.col("Job.employerId"),
+            attributes: ['id', 'companyName'],
+          }],
+      },
+    ],
+  });
+};
