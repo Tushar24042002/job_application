@@ -3,6 +3,8 @@ import { findAllUsers, findUserByEmail, saveUser } from "../repository/user.repo
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 import User from "../models/User.js";
+import EmailTemplate from "../models/EmailTemplate.js";
+import { sendEmail } from "../utils/email.js";
 
 // Function to handle user creation
 export const createUser = async (req, res) => {
@@ -40,7 +42,7 @@ export const validateToken = async (req, res) => {
   console.log(req.headers)
   const token = authHeader && authHeader.split(' ')[1];
   if (!token) {
-    return res.status(401).send({success : false, message : "Invalid Token"});
+    return res.status(401).send({ success: false, message: "Invalid Token" });
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
@@ -51,15 +53,13 @@ export const validateToken = async (req, res) => {
       return res.status(200).send({ success: true, data: { role: user?.role }, message: "Successfully Verified" });
     } else {
       // Access Denied
-      return res.status(401).send({ success: false, data: { role:'UNKNOWN' }, message: error });
+      return res.status(401).send({ success: false, data: { role: 'UNKNOWN' }, message: error });
     }
   } catch (error) {
     // Access Denied
     return res.status(401).send(error);
   }
 }
-
-
 
 export const login = async (req, res) => {
   try {
@@ -91,8 +91,6 @@ export const login = async (req, res) => {
   }
 };
 
-
-
 export const getCurrentUser = async (req, res) => {
   const authHeader = req.headers['authorization'];
   console.log(req.headers)
@@ -114,3 +112,28 @@ export const getCurrentUser = async (req, res) => {
     // throw new Error('Invalid JWT' , error);
   }
 };
+
+
+
+const sendEmailTemplate = async()=>{
+  return await EmailTemplate.findByPk(1);
+}
+function replacePlaceholders(template, data) {
+  return template.replace(/{(\w+)}/g, (_, key) => data[key] || '');
+}
+
+const otp = Math.floor(100000 + Math.random() * 900000).toString(); // Generate a 6-digit OTP
+const userName = 'John Doe'; // Example user name
+const currentYear = new Date().getFullYear(); // Current year
+
+const emailData = {
+    userName: userName,
+    otp: otp,
+    currentYear: currentYear
+};
+const emailTemplate = await sendEmailTemplate();
+const subject = replacePlaceholders(emailTemplate.subject, emailData);
+const body = replacePlaceholders(emailTemplate.body, emailData);
+
+sendEmail("sahilgupta24042002@gmail.com", subject,body);
+

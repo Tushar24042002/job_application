@@ -10,7 +10,6 @@ import IndustryController from "./controllers/industry.controller.js";
 import JobSeekerController from "./controllers/jobSeeker.controller.js";
 import "./services/associationService.js";
 import cors from "cors";
-
 const app = express();
 const port = 5000;
 
