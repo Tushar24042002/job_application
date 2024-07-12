@@ -82,3 +82,19 @@ export const findEmployerByUserId = async (req, res, userId) => {
         res.status(500).json({ error: error.message });
     }
 }
+
+
+export const getCurrentEmployerProfile = async (req, res) => {
+    const user =await getCurrentUser(req, res);
+    try {
+        const userId = user.id;
+        const employer = await EmployerProfile.findOne({ where: { userId } });
+        console.log(employer)
+        if (!employer) {
+            res.status(404).json({ success : false, message: 'Employer Profile not found' });
+        }
+        res.status(200).json({ success : true, data : employer, message: 'Employer Profile Data' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
