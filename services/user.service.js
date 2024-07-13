@@ -5,12 +5,15 @@ import jwt from 'jsonwebtoken';
 import User from "../models/User.js";
 import EmailTemplate from "../models/EmailTemplate.js";
 import { sendEmail } from "../utils/email.js";
+import { EMAIL_TEMPLATE_IDS } from "../Consts.js";
+import { insertOtp } from "./otp.service.js";
 
 // Function to handle user creation
 export const createUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
     const newUser = await saveUser({ name, email, password, role });
+    await sendRegisterationOtp({ name, email });
     res.status(201).json(newUser);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -115,25 +118,40 @@ export const getCurrentUser = async (req, res) => {
 
 
 
-const sendEmailTemplate = async()=>{
-  return await EmailTemplate.findByPk(1);
+const sendEmailTemplate = async (id) => {
+  return await EmailTemplate.findByPk(id);
 }
 function replacePlaceholders(template, data) {
   return template.replace(/{(\w+)}/g, (_, key) => data[key] || '');
 }
 
-const otp = Math.floor(100000 + Math.random() * 900000).toString(); // Generate a 6-digit OTP
-const userName = 'John Doe'; // Example user name
-const currentYear = new Date().getFullYear(); // Current year
 
-const emailData = {
-    userName: userName,
+
+const sendRegisterationOtp = async ({ name, email }) => {
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  const currentYear = new Date().getFullYear();
+
+  const emailData = {
+    userName: name,
     otp: otp,
     currentYear: currentYear
-};
-const emailTemplate = await sendEmailTemplate();
-const subject = replacePlaceholders(emailTemplate.subject, emailData);
-const body = replacePlaceholders(emailTemplate.body, emailData);
+  };
+  const templateId = EMAIL_TEMPLATE_IDS.OTP_REGISTRATION;
+  const emailTemplate = await sendEmailTemplate(templateId);
+  const subject = await replacePlaceholders(emailTemplate.subject, emailData);
+  const body = await replacePlaceholders(emailTemplate.body, emailData);
 
-sendEmail("sahilgupta24042002@gmail.com", subject,body);
+  const currentDate = new Date();
+  const validUpto = new Date(currentDate.getTime() + 10 * 60000);
+
+  const obj = {
+    email: name,
+    otp: otp,
+    validUpto: validUpto
+  }
+  await insertOtp(obj)
+  await sendEmail(email, subject, body);
+}
+
+
 
