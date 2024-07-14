@@ -1,7 +1,9 @@
+import { Sequelize } from "sequelize";
 import sequelize from "../config.js";
 import AppliedJob from "../models/AppliedJobs.js";
 import EmployerProfile from "../models/EmployerProfile.js";
 import Job from "../models/Job.js";
+import JobSeekerProfile from "../models/JobSeeker.js";
 import User from "../models/User.js";
 import { getCurrentUser } from "../services/user.service.js";
 
@@ -71,6 +73,44 @@ export const getEmployerJobs = async (employerId, page, pageSize) => {
                 });
 
                 const totalPages = Math.ceil(count.length / pageSize); // count.length because it's an array due to GROUP BY
+
+                return {
+                        pageData: {
+                                currentPage: page,
+                                totalPages,
+                                pageSize
+                        },
+                        data: rows,
+                };
+        } catch (error) {
+                console.error('Error fetching employer jobs:', error);
+                throw error;
+        }
+};
+
+export const findEmployerJobApplication = async (jobId, page, pageSize) => {
+        try {
+                const offset = (page - 1) * pageSize;
+
+                const { count, rows } = await AppliedJob.findAll({
+                        where: { jobId },
+                        include: [{
+                                model: JobSeekerProfile,
+                                as :"jobSeeker",
+                                id: Sequelize.col("AppliedJob.jobSeekerId"),
+                                include: [
+                                        {
+                                                model: User,
+                                                as : "user",
+                                                id: Sequelize.col("JobSeekerProfile.userId"),
+                                        }
+                                ]
+                        }],
+                        limit: pageSize,
+                        offset: offset,
+                });
+
+                const totalPages = Math.ceil(count.length / pageSize);
 
                 return {
                         pageData: {

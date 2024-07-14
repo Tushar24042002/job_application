@@ -1,6 +1,6 @@
 import CustomValidationError from "../Exceptions/CustomException.js";
 import EmployerProfile from "../models/EmployerProfile.js";
-import { addEmployerProfile, findAllEmployers, findEmployerById, getEmployerJobs } from "../repository/employer.repository.js";
+import { addEmployerProfile, findAllEmployers, findEmployerById, findEmployerJobApplication, getEmployerJobs } from "../repository/employer.repository.js";
 import { findJobSeekerFromRequest } from "./jobSeeker.service.js";
 import { getCurrentUser } from "./user.service.js";
 
@@ -85,16 +85,33 @@ export const findEmployerByUserId = async (req, res, userId) => {
 
 
 export const getCurrentEmployerProfile = async (req, res) => {
-    const user =await getCurrentUser(req, res);
+    const user = await getCurrentUser(req, res);
     try {
         const userId = user.id;
         const employer = await EmployerProfile.findOne({ where: { userId } });
         console.log(employer)
         if (!employer) {
-            res.status(404).json({ success : false, message: 'Employer Profile not found' });
+            res.status(404).json({ success: false, message: 'Employer Profile not found' });
         }
-        res.status(200).json({ success : true, data : employer, message: 'Employer Profile Data' });
+        res.status(200).json({ success: true, data: employer, message: 'Employer Profile Data' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
+}
+
+
+export const getEmployerJobApplication = async (req, res) => {
+    const { jobId } = req.params;
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 10;
+    try {
+        const application = findEmployerJobApplication(jobId, Number(page) || 1, Number(pageSize));
+        if (!application) {
+            res.status(404).json({ success: false, message: 'application not found' });
+        }
+        res.status(200).json({ success: true, data: employer, message: 'application Data' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+
 }

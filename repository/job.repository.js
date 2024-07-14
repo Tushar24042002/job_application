@@ -10,6 +10,7 @@ import { getCurrentUser } from "../services/user.service.js";
 import { findEmployerByUserId } from "../services/employer.service.js";
 import AppliedJob from "../models/AppliedJobs.js";
 import { findJobSeekerFromRequest } from "../services/jobSeeker.service.js";
+import { JOB_STATUS_IDS } from "../Consts.js";
 
 export const addJobProfile = async (req, res) => {
   const {
@@ -93,7 +94,7 @@ export const findJobById = async (id) => {
 };
 
 export const jobApply = async (jobId, jobSeekerId) => {
-  const status = "pending";
+  const status = JOB_STATUS_IDS.SUBMITTED;
   console.log(jobId, jobSeekerId)
   const data = await AppliedJob.create({ jobId, jobSeekerId, status });
   return data;

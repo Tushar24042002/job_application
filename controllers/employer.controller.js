@@ -1,5 +1,5 @@
 import express from "express";
-import { addEmpProfile, getAllEmployers, getEmployerById, getEmployerDashboard, getCurrentEmployerProfile } from "../services/employer.service.js";
+import { addEmpProfile, getAllEmployers, getEmployerById, getEmployerDashboard, getCurrentEmployerProfile, getEmployerJobApplication } from "../services/employer.service.js";
 import { USER_ADMIN, USER_EMPLOYER, USER_JOB_SEEKER } from "../Consts.js";
 import { isValidUser } from "../middleware/middleware.js";
 const router = express.Router();
@@ -12,6 +12,10 @@ router.post("/add", isValidUser([USER_ADMIN, USER_EMPLOYER]), (req, res) => {
 
 router.get("/employer-jobs", isValidUser([USER_ADMIN, USER_EMPLOYER]), (req, res) => {
   getEmployerDashboard(req, res);
+});
+
+router.get("/employer-job-application/:jobId", isValidUser([USER_ADMIN, USER_EMPLOYER]), (req, res) => {
+  getEmployerJobApplication(req, res);
 });
 
 router.get("/", isValidUser([USER_ADMIN]), (req, res) => {

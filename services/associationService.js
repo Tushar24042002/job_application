@@ -3,6 +3,7 @@ import EmployerProfile from '../models/EmployerProfile.js';
 import Industry from '../models/Industry.js';
 import AppliedJob from '../models/AppliedJobs.js';
 import JobSeekerProfile from '../models/JobSeeker.js';
+import User from '../models/User.js';
 
 // Define associations
 EmployerProfile.hasMany(Job, {
@@ -44,4 +45,9 @@ AppliedJob.belongsTo(Job, {
 Job.hasMany(AppliedJob, {
   foreignKey: 'jobId',
   as: 'appliedJobs',
+});
+
+JobSeekerProfile.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user',
 });

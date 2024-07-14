@@ -54,7 +54,6 @@ export const applyJob=async(req,res)=>{
     const { jobId } = req.params;
     try {
         const jobSeeker = await findJobSeekerFromRequest(req,res);
-        console.log(jobSeeker)
         const data = await jobApply(jobId, jobSeeker.id);
         res.status(200).json(data);
     } catch (error) {

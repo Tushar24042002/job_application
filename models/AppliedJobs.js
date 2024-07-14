@@ -2,6 +2,7 @@ import { DataTypes } from 'sequelize';
 import JobSeekerProfile from './JobSeeker.js';
 import Job from './Job.js';
 import sequelize from '../config.js';
+import { JOB_STATUS_IDS } from '../Consts.js';
 
 
 const AppliedJob = sequelize.define('AppliedJob', {
@@ -27,9 +28,9 @@ const AppliedJob = sequelize.define('AppliedJob', {
         }
     },
     status: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 'applied'
+        defaultValue: JOB_STATUS_IDS.PENDING
     },
     appliedAt: {
         type: DataTypes.DATE,
