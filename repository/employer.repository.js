@@ -72,7 +72,7 @@ export const getEmployerJobs = async (employerId, page, pageSize) => {
                         offset: offset,
                 });
 
-                const totalPages = Math.ceil(count.length / pageSize); // count.length because it's an array due to GROUP BY
+                const totalPages = Math.ceil(count / pageSize);
 
                 return {
                         pageData: {
@@ -92,16 +92,25 @@ export const findEmployerJobApplication = async (jobId, page, pageSize) => {
         try {
                 const offset = (page - 1) * pageSize;
 
-                const { count, rows } = await AppliedJob.findAll({
+                const { count, rows } = await AppliedJob.findAndCountAll({
                         where: { jobId },
+                        attributes :{
+                                exclude :['jobSeekerId']
+                        },
                         include: [{
                                 model: JobSeekerProfile,
-                                as :"jobSeeker",
+                                as: "jobSeeker",
                                 id: Sequelize.col("AppliedJob.jobSeekerId"),
+                                attributes :{
+                                        exclude :['userId','resume','createdAt','updatedAt']
+                                },
                                 include: [
                                         {
                                                 model: User,
-                                                as : "user",
+                                                as: "user",
+                                                attributes :{
+                                                        exclude :['password','role','isverified','createdAt','updatedAt']
+                                                },
                                                 id: Sequelize.col("JobSeekerProfile.userId"),
                                         }
                                 ]
@@ -109,8 +118,7 @@ export const findEmployerJobApplication = async (jobId, page, pageSize) => {
                         limit: pageSize,
                         offset: offset,
                 });
-
-                const totalPages = Math.ceil(count.length / pageSize);
+                const totalPages = Math.ceil(count / pageSize);
 
                 return {
                         pageData: {

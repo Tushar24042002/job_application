@@ -105,11 +105,11 @@ export const getEmployerJobApplication = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 10;
     try {
-        const application = findEmployerJobApplication(jobId, Number(page) || 1, Number(pageSize));
+        const application = await findEmployerJobApplication(jobId, Number(page) || 1, Number(pageSize));
         if (!application) {
             res.status(404).json({ success: false, message: 'application not found' });
         }
-        res.status(200).json({ success: true, data: employer, message: 'application Data' });
+        res.status(200).json({ success: true, data: application, message: 'application Data' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
