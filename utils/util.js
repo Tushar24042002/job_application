@@ -1,8 +1,9 @@
 import fs from "fs";
 import { format } from "@fast-csv/format";
+import moment from "moment-timezone";
 
 
-export const csvCreator= async(req, res, data)=>{
+export const csvCreator = async (req, res, data) => {
   const filePath = './data.csv';
   const writeStream = fs.createWriteStream(filePath);
   const csvStream = format({ headers: true });
@@ -22,3 +23,9 @@ export const csvCreator= async(req, res, data)=>{
     });
   });
 };
+
+
+export const customDate = async(date) => {
+  const newDate =await moment(date).tz('Asia/Kolkata');
+  return newDate;
+}

@@ -7,6 +7,8 @@ import EmailTemplate from "../models/EmailTemplate.js";
 import { sendEmail } from "../utils/email.js";
 import { EMAIL_TEMPLATE_IDS } from "../Consts.js";
 import { insertOtp } from "./otp.service.js";
+import { getOtpFromEmail } from "../repository/otp.repository.js";
+import { customDate } from "../utils/util.js";
 
 // Function to handle user creation
 export const createUser = async (req, res) => {
@@ -70,6 +72,12 @@ export const login = async (req, res) => {
     if (!user) {
       return res.status(400).send("user not found");
     } else if (await bcrypt.compare(req.body.password, user.password)) {
+      if(!user.isverified){
+        res.status(403).json({
+          status: false,
+          message:"User is not Verified",
+        });
+      }
       const tokenPayload = {
         id: user.id,
       };
@@ -142,10 +150,10 @@ const sendRegisterationOtp = async ({ name, email }) => {
   const body = await replacePlaceholders(emailTemplate.body, emailData);
 
   const currentDate = new Date();
-  const validUpto = new Date(currentDate.getTime() + 10 * 60000);
+  const validUpto = await customDate(new Date(currentDate.getTime() + 10 * 60000));
 
   const obj = {
-    email: name,
+    email: email,
     otp: otp,
     validUpto: validUpto
   }
@@ -155,3 +163,30 @@ const sendRegisterationOtp = async ({ name, email }) => {
 
 
 
+export const verifyOTP = async (req, res) => {
+  try {
+    const { otp, email } = req.body;
+    const otpData = await getOtpFromEmail(email);
+    if (otpData == null || otpData == undefined) {
+
+    }
+    if (otpData.otp === otp) {
+      const currentDate = await customDate(new Date());
+      const validUpto = await customDate(otpData.validUpto);
+      console.log(currentDate, validUpto, currentDate <= validUpto)
+      if (currentDate.isBefore(validUpto)) {
+     await   User.update(
+          { isverified: true },
+          { where: {email} }
+        )
+        return res.status(200).send({ success: true, data: otpData, message: "Successfully Verified" });
+      }
+      return res.status(400).send({ success: false, data: otpData, message: "OTP TimeOut" });
+    }
+    console.log(otpData);
+    return res.status(400).send({ success: false, data: otpData, message: "Invalid OTP" });
+
+  } catch (error) {
+    return res.status(500).send({ success: false, message: "error" });
+  }
+}
