@@ -104,7 +104,6 @@ export const jobApply = async (jobId, jobSeekerId) => {
 export const getAllJobSeekerAppliedJobs = async (req, res) => {
   const jobSeeker = await findJobSeekerFromRequest(req, res);
   const jobSeekerId = jobSeeker.id;
-  console.log(jobSeekerId);
   return await AppliedJob.findAll({
     where: { jobSeekerId },
     attributes: {
@@ -127,3 +126,13 @@ export const getAllJobSeekerAppliedJobs = async (req, res) => {
     ],
   });
 };
+
+
+export const updateUserAppliedJobStatus = async (id, status) => {
+ const data =  await AppliedJob.update(
+    { status: status },
+    { where: { id } }
+  )
+
+  return data;
+}

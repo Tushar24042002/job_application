@@ -1,5 +1,5 @@
 import CustomValidationError from "../Exceptions/CustomException.js";
-import { addJobProfile, findAllJobs, findJobById, getAllJobSeekerAppliedJobs, jobApply } from "../repository/job.repository.js";
+import { addJobProfile, findAllJobs, findJobById, getAllJobSeekerAppliedJobs, jobApply, updateUserAppliedJobStatus } from "../repository/job.repository.js";
 import { findJobSeekerFromRequest } from "./jobSeeker.service.js";
 
 export const addJob = async (req, res, next) => {
@@ -61,3 +61,15 @@ export const applyJob=async(req,res)=>{
     }
 }
 
+
+
+export const updateAppliedJobStatus=async(req,res)=>{
+    const { appliedJobId } = req.params;
+    const {status} = req.body;
+    try {
+     const data =  await updateUserAppliedJobStatus(appliedJobId, status);
+       res.status(200).json(data);
+    } catch (error) {
+        
+    }
+}
