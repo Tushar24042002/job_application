@@ -11,6 +11,8 @@ import { findEmployerByUserId } from "../services/employer.service.js";
 import AppliedJob from "../models/AppliedJobs.js";
 import { findJobSeekerFromRequest } from "../services/jobSeeker.service.js";
 import { JOB_STATUS_IDS } from "../Consts.js";
+import JobSeekerProfile from "../models/JobSeeker.js";
+import User from "../models/User.js";
 
 export const addJobProfile = async (req, res) => {
   const {
@@ -129,10 +131,34 @@ export const getAllJobSeekerAppliedJobs = async (req, res) => {
 
 
 export const updateUserAppliedJobStatus = async (id, status) => {
- const data =  await AppliedJob.update(
+  const data = await AppliedJob.update(
     { status: status },
     { where: { id } }
   )
-
-  return data;
+  const userData = await AppliedJob.findOne({ where: { id }, 
+    attributes: {
+      exclude: ['jobSeekerId', 'jobId']
+    },
+    include: [
+      {
+        model: Job,
+        as: 'job',
+        id: Sequelize.col("AppliedJob.jobId"),
+        attributes: ['id', 'title'],
+      },
+      {
+        model: JobSeekerProfile,
+        as: 'jobSeeker',
+        id: Sequelize.col("AppliedJob.jobSeekerId"),
+        attributes: ['id'], 
+        include: [
+          {
+            model: User,
+            as: 'user',
+            id: Sequelize.col("JobSeekerProfile.userId"),
+            attributes: ['id','name', 'email'],
+          }],
+      },
+    ] });
+  return userData;
 }

@@ -28,3 +28,7 @@ export const findUserByEmail = async(req)=>{
     }
     return user;
 }
+
+export const findUserById= async(id)=>{
+  return await User.findByPk(id);
+}

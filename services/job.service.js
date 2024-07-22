@@ -1,10 +1,12 @@
+import { JOB_STATUS_IDS } from "../Consts.js";
 import CustomValidationError from "../Exceptions/CustomException.js";
 import { addJobProfile, findAllJobs, findJobById, getAllJobSeekerAppliedJobs, jobApply, updateUserAppliedJobStatus } from "../repository/job.repository.js";
+import { sendEmail } from "../utils/email.js";
 import { findJobSeekerFromRequest } from "./jobSeeker.service.js";
 
 export const addJob = async (req, res, next) => {
     try {
-        const newUser = await addJobProfile(req,res);
+        const newUser = await addJobProfile(req, res);
         res.status(201).json(newUser);
     } catch (error) {
         if (error.name === 'SequelizeValidationError') {
@@ -28,7 +30,7 @@ export const getAllJobs = async (req, res) => {
 export const findAllJobSeekerAppliedJobs = async (req, res) => {
     console.log("calling this one")
     try {
-        const appliedJob = await getAllJobSeekerAppliedJobs(req,res);
+        const appliedJob = await getAllJobSeekerAppliedJobs(req, res);
         res.status(200).json(appliedJob);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -36,8 +38,7 @@ export const findAllJobSeekerAppliedJobs = async (req, res) => {
 }
 
 
-export const getJobById= async(req, res)=>{
-    console.log("calling another")
+export const getJobById = async (req, res) => {
     const jobId = req.params.id;
     try {
         const job = await findJobById(jobId);
@@ -50,12 +51,12 @@ export const getJobById= async(req, res)=>{
     }
 }
 
-export const applyJob=async(req,res)=>{
+export const applyJob = async (req, res) => {
     const { jobId } = req.params;
     try {
-        const jobSeeker = await findJobSeekerFromRequest(req,res);
+        const jobSeeker = await findJobSeekerFromRequest(req, res);
         const data = await jobApply(jobId, jobSeeker.id);
-        res.status(200).json(data);
+        res.status(200).json({ success: true, data: data });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -63,13 +64,68 @@ export const applyJob=async(req,res)=>{
 
 
 
-export const updateAppliedJobStatus=async(req,res)=>{
+export const updateAppliedJobStatus = async (req, res) => {
     const { appliedJobId } = req.params;
-    const {status} = req.body;
+    const { status } = req.body;
     try {
-     const data =  await updateUserAppliedJobStatus(appliedJobId, status);
-       res.status(200).json(data);
+        const user = await updateUserAppliedJobStatus(appliedJobId, status);
+        const userName = 'John Doe';
+        const jobTitle = 'Software Engineer';
+        const jobStatusId = JOB_STATUS_IDS.SUBMITTED;
+        const emailTemplate = jobApplicationStatusEmailTemplate(userName, jobTitle, jobStatusId);
+        console.log(user)
+        // sendEmail(user.emai,"Job Status", emailTemplate);
+        res.status(200).json({ success: true, message: "Job Status updated successfully", data : user });
     } catch (error) {
-        
+        res.status(500).json({ error: error.message });
     }
 }
+
+
+export const jobApplicationStatusEmailTemplate = (userName, jobTitle, jobStatusId) => {
+    let statusMessage;
+
+    switch (jobStatusId) {
+        case JOB_STATUS_IDS.PENDING:
+            statusMessage = 'Your application is currently pending review.';
+            break;
+        case JOB_STATUS_IDS.SUBMITTED:
+            statusMessage = 'Your application has been submitted successfully.';
+            break;
+        case JOB_STATUS_IDS.REVIEWED:
+            statusMessage = 'Your application has been reviewed by our team.';
+            break;
+        case JOB_STATUS_IDS.INTERVIEW_SCHEDULED:
+            statusMessage = 'Your interview has been scheduled.';
+            break;
+        case JOB_STATUS_IDS.INTERVIEWED:
+            statusMessage = 'You have completed the interview.';
+            break;
+        case JOB_STATUS_IDS.OFFERED:
+            statusMessage = 'Congratulations! You have been offered the position.';
+            break;
+        case JOB_STATUS_IDS.ACCEPTED:
+            statusMessage = 'Thank you for accepting the job offer. We are excited to have you on board!';
+            break;
+        case JOB_STATUS_IDS.REJECTED:
+            statusMessage = 'We regret to inform you that your application has been rejected.';
+            break;
+        case JOB_STATUS_IDS.WITHDRAWN:
+            statusMessage = 'You have withdrawn your application.';
+            break;
+        default:
+            statusMessage = 'There has been an update to your application status.';
+    }
+
+    return `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+        <h2>Job Application Status Update</h2>
+        <p>Dear ${userName},</p>
+        <p>We are writing to inform you that the status of your application for the position of <strong>${jobTitle}</strong> has been updated.</p>
+        <p><strong>Status Update:</strong> ${statusMessage}</p>
+        <p>Thank you for your interest in joining our team. If you have any questions, please feel free to reach out to us.</p>
+        <p>Best regards,</p>
+        <p>The Hiring Team</p>
+      </div>
+    `;
+};

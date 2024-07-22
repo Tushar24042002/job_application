@@ -72,10 +72,10 @@ export const login = async (req, res) => {
     if (!user) {
       return res.status(400).send("user not found");
     } else if (await bcrypt.compare(req.body.password, user.password)) {
-      if(!user.isverified){
+      if (!user.isverified) {
         res.status(403).json({
           status: false,
-          message:"User is not Verified",
+          message: "User is not Verified",
         });
       }
       const tokenPayload = {
@@ -173,11 +173,10 @@ export const verifyOTP = async (req, res) => {
     if (otpData.otp === otp) {
       const currentDate = await customDate(new Date());
       const validUpto = await customDate(otpData.validUpto);
-      console.log(currentDate, validUpto, currentDate <= validUpto)
       if (currentDate.isBefore(validUpto)) {
-     await   User.update(
+        await User.update(
           { isverified: true },
-          { where: {email} }
+          { where: { email } }
         )
         return res.status(200).send({ success: true, data: otpData, message: "Successfully Verified" });
       }
@@ -188,5 +187,20 @@ export const verifyOTP = async (req, res) => {
 
   } catch (error) {
     return res.status(500).send({ success: false, message: "error" });
+  }
+}
+
+
+export const findUserByJobSeekerId = async (id) => {
+  try {
+    const job_seeker = await findJobSeekerById(empid);
+    if (!job_seeker) {
+      return null;
+    }
+    const user = await findUserById(job_seeker.userId);
+
+    return user
+  } catch (error) {
+    return null;
   }
 }
