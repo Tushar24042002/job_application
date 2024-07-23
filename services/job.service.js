@@ -68,24 +68,21 @@ export const updateAppliedJobStatus = async (req, res) => {
     const { appliedJobId } = req.params;
     const { status } = req.body;
     try {
-        const user = await updateUserAppliedJobStatus(appliedJobId, status);
-        const userName = 'John Doe';
-        const jobTitle = 'Software Engineer';
-        const jobStatusId = JOB_STATUS_IDS.SUBMITTED;
-        const emailTemplate = jobApplicationStatusEmailTemplate(userName, jobTitle, jobStatusId);
-        console.log(user)
-        // sendEmail(user.emai,"Job Status", emailTemplate);
-        res.status(200).json({ success: true, message: "Job Status updated successfully", data : user });
+        const data = await updateUserAppliedJobStatus(appliedJobId, status);
+        const emailTemplate =await jobApplicationStatusEmailTemplate(data?.jobSeeker?.user?.email, data?.job?.title, status);
+        console.log(emailTemplate)
+        sendEmail(data?.jobSeeker?.user?.email,"Job Status", emailTemplate);
+        res.status(200).json({ success: true, message: "Job Status updated successfully", data : data });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
 
 
-export const jobApplicationStatusEmailTemplate = (userName, jobTitle, jobStatusId) => {
+export const jobApplicationStatusEmailTemplate =async (userName, jobTitle, jobStatusId) => {
     let statusMessage;
 
-    switch (jobStatusId) {
+    switch (Number(jobStatusId)) {
         case JOB_STATUS_IDS.PENDING:
             statusMessage = 'Your application is currently pending review.';
             break;

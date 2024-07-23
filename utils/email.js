@@ -5,13 +5,18 @@ import nodemailer from 'nodemailer';
 
 dotenv.config();
 
-const emailQueue = new Queue('emailQueue', {
-    redis: {
-      host: '127.0.0.1', 
-      port: 6379,        
-      maxRetriesPerRequest: 50 
-    }
-  });
+// const emailQueue = new Queue('emailQueue', {
+//     redis: {
+//       host: '127.0.0.1', 
+//       port: 6379,        
+//       maxRetriesPerRequest: 50 
+//     }
+//   });
+
+
+const redisUrl = process.env.REDIS_URL;
+
+const emailQueue = new Queue('emailQueue', redisUrl);
 
 // Event listeners for the queue
 emailQueue.on('completed', (job, result) => {
