@@ -40,7 +40,9 @@ emailQueue.process(async (job, done) => {
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS
-    }
+    },
+    logger: true, 
+    debug: true   
   });
 
 
