@@ -51,6 +51,10 @@ wss.on('connection', (ws) => {
     });
   });
 
+
+
+
+
 sequelize.sync({force : false}).then(() => {  
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);

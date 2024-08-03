@@ -1,5 +1,6 @@
-import CustomValidationError from "../Exceptions/CustomException.js";
+
 import EmailTemplate from "../models/EmailTemplate.js";
+
 
 export const addEmail = async (subject, body) => {
     try {
@@ -13,6 +14,20 @@ export const addEmail = async (subject, body) => {
         }
     }
 }
+
+await addEmail("Complete Your Registration - OTP Verification", `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+      <h2>Complete Your Registration</h2>
+      <p>Hello, {userName},</p>
+      <p>Thank you for registering with our job portal. To complete your registration, please use the following One-Time Password (OTP) to verify your email address:</p>
+      <div style="font-size: 24px; font-weight: bold; text-align: center; margin: 20px 0; color: #333333;">{otp}</div>
+      <p>This OTP is valid for the next 10 minutes. Please do not share this OTP with anyone.</p>
+      <p>If you did not request this email, please ignore it.</p>
+      <p>Thank you,<br>Job Portal Team</p>
+    </div>
+`)
+
+
 await addEmail("Job Application Status Update",`
     <div style="font-family: Arial, sans-serif; line-height: 1.6;">
       <h2>Job Application Status Update</h2>
