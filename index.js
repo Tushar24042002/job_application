@@ -9,7 +9,6 @@ import JobContoller from "./controllers/job.controller.js";
 import IndustryController from "./controllers/industry.controller.js";
 import JobSeekerController from "./controllers/jobSeeker.controller.js";
 import { chatHandler } from './chat/chat.js'; 
-import { chatHandler } from './chat/chat.js'; 
 import "./services/associationService.js";
 import cors from "cors";
 import { Server } from 'socket.io';
