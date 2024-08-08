@@ -10,7 +10,7 @@ JobSeekerProfile.init({
     primaryKey: true,
     autoIncrement: true,
   },
-  userId: {
+  user_id: {
     type: DataTypes.INTEGER,
     references: {
       model: User,
@@ -28,7 +28,8 @@ JobSeekerProfile.init({
   },
 }, {
   sequelize,
-  modelName: 'JobSeekerProfile',
+  modelName: 'job_seeker_profile',
+    tableName:'job_seeker_profile'
 });
 
 export default JobSeekerProfile;

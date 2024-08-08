@@ -8,6 +8,7 @@ import employerController from "./controllers/employer.controller.js"
 import JobContoller from "./controllers/job.controller.js";
 import IndustryController from "./controllers/industry.controller.js";
 import JobSeekerController from "./controllers/jobSeeker.controller.js";
+import EmailTemplateController from "./controllers/email.controller.js";
 import { chatHandler } from './chat/chat.js'; 
 import "./services/associationService.js";
 import cors from "cors";
@@ -26,6 +27,7 @@ app.use("/employer",employerController);
 app.use("/job",JobContoller);
 app.use("/industry", IndustryController);
 app.use("/employee", JobSeekerController);
+app.use("/email", EmailTemplateController);
 
 app.use(errorHandler);
 const wss = new WebSocketServer({ port: 8080 });
@@ -62,3 +64,6 @@ sequelize.sync({force : false}).then(() => {
 }).catch(error => {
     console.error('Unable to synchronize the database:', error);
 });
+
+
+

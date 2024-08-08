@@ -5,7 +5,7 @@ import { USER_ADMIN, USER_EMPLOYER } from '../Consts.js';
 
 const router = express.Router();
 
-// Route to create a new user
+// Route to create a new user 
 router.post('/create', createUser);
 
 

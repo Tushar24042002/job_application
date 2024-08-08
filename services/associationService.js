@@ -7,47 +7,47 @@ import User from '../models/User.js';
 
 // Define associations
 EmployerProfile.hasMany(Job, {
-  foreignKey: 'employerId',
+  foreignKey: 'employer_id',
   as: 'jobs',
 });
 
 Job.belongsTo(EmployerProfile, {
-  foreignKey: 'employerId',
+  foreignKey: 'employer_id',
   as: 'employer',
 });
 
 
   Job.belongsToMany(Industry, {
-    through: 'JobIndustry',
-    foreignKey: 'jobId',
+    through: 'job_industry',
+    foreignKey: 'job_id',
   });
 
 
 
 // JobSeeker has many AppliedJobs
 JobSeekerProfile.hasMany(AppliedJob, {
-  foreignKey: 'jobSeekerId',
-  as: 'appliedJobs',
+  foreignKey: 'job_seeker_id',
+  as: 'applied_jobs',
 });
 
 // AppliedJob belongs to JobSeeker
 AppliedJob.belongsTo(JobSeekerProfile, {
-  foreignKey: 'jobSeekerId',
-  as: 'jobSeeker',
+  foreignKey: 'job_seeker_id',
+  as: 'job_seeker',
 });
 
 // AppliedJob belongs to Job
 AppliedJob.belongsTo(Job, {
-  foreignKey: 'jobId',
+  foreignKey: 'job_id',
   as: 'job',
 });
 // Job has many AppliedJobs
 Job.hasMany(AppliedJob, {
-  foreignKey: 'jobId',
-  as: 'appliedJobs',
+  foreignKey: 'job_id',
+  as: 'applied_jobs',
 });
 
 JobSeekerProfile.belongsTo(User, {
-  foreignKey: 'userId',
+  foreignKey: 'user_id',
   as: 'user',
 });

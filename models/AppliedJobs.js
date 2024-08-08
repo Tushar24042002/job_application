@@ -11,7 +11,7 @@ const AppliedJob = sequelize.define('AppliedJob', {
         primaryKey: true,
         autoIncrement: true
     },
-    jobSeekerId: {
+    job_seeker_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -19,7 +19,7 @@ const AppliedJob = sequelize.define('AppliedJob', {
             key: 'id'
         }
     },
-    jobId: {
+    job_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
@@ -32,13 +32,14 @@ const AppliedJob = sequelize.define('AppliedJob', {
         allowNull: false,
         defaultValue: JOB_STATUS_IDS.PENDING
     },
-    appliedAt: {
+    applied_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
     }
 }, {
     timestamps: false, 
-    tableName: 'appliedJobs'
+    tableName: 'applied_jobs',
+    tableName :'applied_jobs',
 });
 
 export default AppliedJob;

@@ -36,7 +36,7 @@ export const generateToken = async (req, res) => {
   let jwtSecretKey = process.env.JWT_SECRET_KEY;
   let data = {
     time: Date(),
-    userId: 12,
+    user_id: 12,
   }
   const token = jwt.sign(data, jwtSecretKey);
   res.send(token);
@@ -51,8 +51,8 @@ export const validateToken = async (req, res) => {
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    const userId = decoded.id;
-    const user = await User.findByPk(userId);
+    const user_id = decoded.id;
+    const user = await User.findByPk(user_id);
 
     if (user) {
       return res.status(200).send({ success: true, data: { role: user?.role }, message: "Successfully Verified" });
@@ -112,8 +112,8 @@ export const getCurrentUser = async (req, res) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    const userId = decoded.id;
-    const user = await User.findByPk(userId);
+    const user_id = decoded.id;
+    const user = await User.findByPk(user_id);
     if (!user) {
       throw new Error('User not found');
     }
@@ -155,7 +155,7 @@ const sendRegisterationOtp = async ({ name, email }) => {
   const obj = {
     email: email,
     otp: otp,
-    validUpto: validUpto
+    valid_upto: validUpto
   }
   await insertOtp(obj)
   await sendEmail(email, subject, body);
@@ -172,7 +172,7 @@ export const verifyOTP = async (req, res) => {
     }
     if (otpData.otp === otp) {
       const currentDate = await customDate(new Date());
-      const validUpto = await customDate(otpData.validUpto);
+      const validUpto = await customDate(otpData.valid_upto);
       if (currentDate.isBefore(validUpto)) {
         await User.update(
           { isverified: true },
@@ -186,7 +186,7 @@ export const verifyOTP = async (req, res) => {
     return res.status(400).send({ success: false, data: otpData, message: "Invalid OTP" });
 
   } catch (error) {
-    return res.status(500).send({ success: false, message: "error" });
+    return res.status(500).send({ success: false, message: error?.message });
   }
 }
 
@@ -197,7 +197,7 @@ export const findUserByJobSeekerId = async (id) => {
     if (!job_seeker) {
       return null;
     }
-    const user = await findUserById(job_seeker.userId);
+    const user = await findUserById(job_seeker.user_id);
 
     return user
   } catch (error) {

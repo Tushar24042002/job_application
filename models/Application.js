@@ -11,14 +11,14 @@ Application.init({
     primaryKey: true,
     autoIncrement: true,
   },
-  jobId: {
+  job_id: {
     type: DataTypes.INTEGER,
     references: {
       model: Job,
       key: 'id',
     },
   },
-  jobSeekerId: {
+  job_seeker_id: {
     type: DataTypes.INTEGER,
     references: {
       model: JobSeekerProfile,
@@ -28,12 +28,13 @@ Application.init({
   status: {
     type: DataTypes.STRING,
   },
-  coverLetter: {
+  cover_letter: {
     type: DataTypes.TEXT,
   },
 }, {
   sequelize,
-  modelName: 'Application',
+  modelName: 'application',
+  tableName :'application',
 });
 
 module.exports = Application;

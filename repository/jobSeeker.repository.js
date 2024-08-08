@@ -2,6 +2,7 @@ import { uploadFile } from "../aws/s3.js";
 import upload from "../config/upload.js";
 import JobSeeker from "../models/JobSeeker.js";
 import fs from 'fs';
+import { getCurrentUser } from "../services/user.service.js";
 
 
 const deleteFile = (filePath) => {
@@ -38,8 +39,10 @@ export const addJobSeekerProfile = async (req, res) => {
     const fileName = `resumes/${uploadedFile.filename}`;
     const resumeUrl = await uploadFile(filePath, fileName);
     await deleteFile(filePath);
+    const user =await getCurrentUser(req,res);
     const jobSeekerData = {
       ...req.body,
+      user_id : user.id,
       resume: resumeUrl // Store the resume URL in the JobSeeker profile
     };
 
@@ -62,6 +65,6 @@ export const findJobSeekerById = async (id) => {
 
 
 
-export const findJobSeekerByUserId= async(userId)=>{
-  return await JobSeeker.findOne({where :{userId}})
+export const findJobSeekerByuser_id= async(user_id)=>{
+  return await JobSeeker.findOne({where :{user_id}})
 }

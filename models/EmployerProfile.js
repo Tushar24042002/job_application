@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config.js';
+import User from './User.js';
 
 const EmployerProfile = sequelize.define('EmployerProfile', {
   id: {
@@ -7,12 +8,13 @@ const EmployerProfile = sequelize.define('EmployerProfile', {
     primaryKey: true,
     autoIncrement: true,
   },
-  userId: {
+  user_id: {
     type: DataTypes.INTEGER,
     references: {
-      model: 'Users', // Refer to table name directly
+      model: User, 
       key: 'id',
     },
+    unique: true,
     allowNull: false,
     validate: {
       notNull: {
@@ -23,7 +25,7 @@ const EmployerProfile = sequelize.define('EmployerProfile', {
       }
     }
   },
-  companyName: {
+  company_name: {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
@@ -35,7 +37,7 @@ const EmployerProfile = sequelize.define('EmployerProfile', {
       }
     }
   },
-  companyDescription: {
+  company_description: {
     type: DataTypes.TEXT,
     allowNull: false,
     validate: {
@@ -47,7 +49,7 @@ const EmployerProfile = sequelize.define('EmployerProfile', {
       }
     }
   },
-  companyWebsite: {
+  company_website: {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
@@ -59,7 +61,7 @@ const EmployerProfile = sequelize.define('EmployerProfile', {
       }
     }
   },
-  employeeRange: {
+  employee_range: {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
@@ -73,7 +75,8 @@ const EmployerProfile = sequelize.define('EmployerProfile', {
   },
 }, {
   sequelize,
-  modelName: 'EmployerProfile',
+  modelName: 'employer_profile',
+  tableName :'employer_profile',
 });
 
 export default EmployerProfile;

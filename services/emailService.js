@@ -2,10 +2,12 @@
 import EmailTemplate from "../models/EmailTemplate.js";
 
 
-export const addEmail = async (subject, body) => {
+export const addEmail = async (req, res) => {
     try {
+      const {subject, body} = req.body;
         const data = await EmailTemplate.create({ subject, body });
         console.log(data)
+        res.status(200).json(data);
     } catch (error) {
         if (error.name === 'SequelizeValidationError') {
            console.log(error);

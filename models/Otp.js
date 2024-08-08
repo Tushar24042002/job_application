@@ -17,13 +17,14 @@ Otp.init({
     type: DataTypes.STRING,
     allowNull: false,
   },
-  validUpto: {
+  valid_upto: {
     type: DataTypes.DATE,
     allowNull: false,
   },
 }, {
   sequelize,
-  modelName: 'Otp',
+  modelName: 'otp',
+    tableName :"otp"
 });
 
 export default Otp;

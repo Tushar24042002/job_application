@@ -9,6 +9,7 @@ export const addEmpProfile = async (req, res, next) => {
         const newUser = await addEmployerProfile(req, res);
         res.status(201).json(newUser);
     } catch (error) {
+        console.log(error)
         if (error.name === 'SequelizeValidationError') {
             throw new CustomValidationError(error.errors);
         } else {
@@ -59,7 +60,7 @@ export const getEmployerDashboard = async (req, res) => {
     const pageSize = parseInt(req.query.pageSize) || 10;
     try {
         const user = await getCurrentUser(req, res);
-        const employer = await findEmployerByUserId(req, res, user.id);
+        const employer = await findEmployerByuser_id(req, res, user.id);
         const dashboardData = await getEmployerJobs(employer.id, Number(page) || 1, Number(pageSize));
         if (!dashboardData) {
             res.status(400).json([{ message: 'Employer not found' }]);
@@ -71,9 +72,9 @@ export const getEmployerDashboard = async (req, res) => {
 }
 
 
-export const findEmployerByUserId = async (req, res, userId) => {
+export const findEmployerByuser_id = async (req, res, user_id) => {
     try {
-        const employer = await EmployerProfile.findOne({ where: { userId } });
+        const employer = await EmployerProfile.findOne({ where: { user_id } });
         if (!employer) {
             res.status(404).json([{ message: 'Employer Profile not found' }]);
         }
@@ -87,8 +88,8 @@ export const findEmployerByUserId = async (req, res, userId) => {
 export const getCurrentEmployerProfile = async (req, res) => {
     const user = await getCurrentUser(req, res);
     try {
-        const userId = user.id;
-        const employer = await EmployerProfile.findOne({ where: { userId } });
+        const user_id = user.id;
+        const employer = await EmployerProfile.findOne({ where: { user_id } });
         console.log(employer)
         if (!employer) {
             res.status(404).json({ success: false, message: 'Employer Profile not found' });

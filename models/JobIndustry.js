@@ -6,18 +6,24 @@ import sequelize from '../config.js'; // Adjust path as per your structure
 class JobIndustry extends Model {}
 
 JobIndustry.init({
-  jobId: {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  job_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  industryId: {
+  industry_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
 }, {
   sequelize,
-  modelName: 'JobIndustry',
-  timestamps: false, // Assuming you don't need timestamps for this join table
+  modelName: 'job_industry',
+  tableName :'job_industry',
+  timestamps: true, 
 });
 
 export default JobIndustry;

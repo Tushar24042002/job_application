@@ -19,7 +19,8 @@ EmailTemplate.init({
     },
 }, {
     sequelize,
-    modelName: 'emailTemplate',
+    modelName: 'email_template',
+    tableName :'email_template',
     timestamps: false,
 });
 

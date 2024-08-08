@@ -55,6 +55,7 @@ export const applyJob = async (req, res) => {
     const { jobId } = req.params;
     try {
         const jobSeeker = await findJobSeekerFromRequest(req, res);
+        console.log(jobSeeker , "dfmnfd gfdn")
         const data = await jobApply(jobId, jobSeeker.id);
         res.status(200).json({ success: true, data: data });
     } catch (error) {
@@ -69,9 +70,10 @@ export const updateAppliedJobStatus = async (req, res) => {
     const { status } = req.body;
     try {
         const data = await updateUserAppliedJobStatus(appliedJobId, status);
-        const emailTemplate =await jobApplicationStatusEmailTemplate(data?.jobSeeker?.user?.email, data?.job?.title, status);
+        console.log(data)
+        const emailTemplate =await jobApplicationStatusEmailTemplate(data?.userEmail, data?.jobTitle, status);
         console.log(emailTemplate)
-        sendEmail(data?.jobSeeker?.user?.email,"Job Status", emailTemplate);
+        sendEmail(data?.userEmail,"Job Status", emailTemplate);
         res.status(200).json({ success: true, message: "Job Status updated successfully", data : data });
     } catch (error) {
         res.status(500).json({ error: error.message });

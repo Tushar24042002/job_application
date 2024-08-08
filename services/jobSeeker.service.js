@@ -1,11 +1,10 @@
 import CustomValidationError from "../Exceptions/CustomException.js";
-import { addJobSeekerProfile, findAllJobSeekers, findJobSeekerById, findJobSeekerByUserId } from "../repository/jobSeeker.repository.js";
+import { addJobSeekerProfile, findAllJobSeekers, findJobSeekerById, findJobSeekerByuser_id } from "../repository/jobSeeker.repository.js";
 import { getCurrentUser } from "./user.service.js";
 
 export const addJobSeeker = (req, res, next) => {
   addJobSeekerProfile(req, res)
     .then((data) => {
-      console.log(data, "data service");
       res.status(201).json(data);
     })
     .catch((error) => {
@@ -43,7 +42,8 @@ export const getJobSeekerById = async (req, res) => {
 export const findJobSeekerFromRequest = async (req, res) => {
   try {
     const user = await getCurrentUser(req, res);
-    const jobSeeker = await findJobSeekerByUserId(user.id);
+    console.log(user, "user")
+    const jobSeeker = await findJobSeekerByuser_id(user.id);
     return jobSeeker;
   } catch (error) {
     res.status(500).json([{ message: 'Job Seeker not found' }]);

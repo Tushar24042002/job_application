@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config.js';
 import Industry from './Industry.js';
+import EmployerProfile from './EmployerProfile.js';
 
 const Job = sequelize.define('Job', {
   id: {
@@ -8,11 +9,11 @@ const Job = sequelize.define('Job', {
     primaryKey: true,
     autoIncrement: true,
   },
-  employerId: {
+  employer_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'EmployerProfiles', // Refer to table name directly
+      model: EmployerProfile,
       key: 'id',
     },
   },
@@ -37,12 +38,13 @@ const Job = sequelize.define('Job', {
   },
 }, {
   sequelize,
-  modelName: 'Job',
+  modelName: 'job',
+  tableName :'job',
 });
 
 Job.belongsToMany(Industry, {
-  through: 'JobIndustry',
-  foreignKey: 'jobId',
+  through: 'job_industry',
+  foreignKey: 'job_id',
 });
 
 export default Job;

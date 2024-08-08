@@ -8,7 +8,7 @@ export const addOtp = async (obj) => {
   export const getOtpFromEmail = async (email) => {
     const data = await Otp.findOne({
         where: { email },
-        order: [['validUpto', 'DESC']] 
+        order: [['valid_upto', 'DESC']] 
     });
     return data;
 };

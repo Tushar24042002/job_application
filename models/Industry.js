@@ -15,17 +15,11 @@ Industry.init({
     type: DataTypes.STRING,
     allowNull: false,
   },
-  createdAt: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    allowNull: false,
-  },
 }, {
   sequelize,
-  modelName: 'Industry',
+  modelName: 'industry',
+  tableName :'industry',
+  timestamps: true, 
 });
 
 export default Industry;
