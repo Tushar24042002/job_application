@@ -8,19 +8,19 @@ import employerController from "./controllers/employer.controller.js"
 import JobContoller from "./controllers/job.controller.js";
 import IndustryController from "./controllers/industry.controller.js";
 import JobSeekerController from "./controllers/jobSeeker.controller.js";
-import EmailTemplateController from "./controllers/email.controller.js";
+import EmailTemplateController from "./controllers/email.controller.js"
 import { chatHandler } from './chat/chat.js'; 
 import "./services/associationService.js";
 import cors from "cors";
-import { Server } from 'socket.io';
-import http from 'http';
+
+
 const app = express();
 const port = 5000;
-const server = http.createServer(app);
-const io = new Server(server);
-import WebSocket, { WebSocketServer } from 'ws';
+
 app.use(bodyParser.json());
+// Use CORS middleware
 app.use(cors());
+
 
 app.use("/users", userController);
 app.use("/employer",employerController);
@@ -30,30 +30,6 @@ app.use("/employee", JobSeekerController);
 app.use("/email", EmailTemplateController);
 
 app.use(errorHandler);
-const wss = new WebSocketServer({ port: 8080 });
-// chatHandler(io);
-wss.on('connection', (ws) => {
-    console.log('A new client connected');
-  
-    // Handle incoming messages
-    ws.on('message', (message) => {
-      console.log(`Received message: ${message}`);
-      
-      // Broadcast the message to all connected clients
-      wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN) {
-          client.send(message);
-        }
-      });
-    });
-  
-    // Handle client disconnection
-    ws.on('close', () => {
-      console.log('Client disconnected');
-    });
-  });
-
-
 
 
 
@@ -64,6 +40,3 @@ sequelize.sync({force : false}).then(() => {
 }).catch(error => {
     console.error('Unable to synchronize the database:', error);
 });
-
-
-
