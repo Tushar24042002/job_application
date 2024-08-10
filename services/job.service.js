@@ -3,6 +3,7 @@ import CustomValidationError from "../Exceptions/CustomException.js";
 import { addJobProfile, findAllJobs, findJobById, getAllJobSeekerAppliedJobs, jobApply, updateUserAppliedJobStatus } from "../repository/job.repository.js";
 import { sendEmail } from "../utils/email.js";
 import { findJobSeekerFromRequest } from "./jobSeeker.service.js";
+import { getCurrentUser } from "./user.service.js";
 
 export const addJob = async (req, res, next) => {
     try {
@@ -55,8 +56,11 @@ export const applyJob = async (req, res) => {
     const { jobId } = req.params;
     try {
         const jobSeeker = await findJobSeekerFromRequest(req, res);
-        console.log(jobSeeker , "dfmnfd gfdn")
         const data = await jobApply(jobId, jobSeeker.id);
+        const job = await findJobById(jobId);
+        const user = await getCurrentUser(req,res);
+        const emailTemplate =await jobApplicationStatusEmailTemplate(user?.email, job?.title, JOB_STATUS_IDS.SUBMITTED);
+        sendEmail(user?.email,"Job Status", emailTemplate);
         res.status(200).json({ success: true, data: data });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -70,9 +74,7 @@ export const updateAppliedJobStatus = async (req, res) => {
     const { status } = req.body;
     try {
         const data = await updateUserAppliedJobStatus(appliedJobId, status);
-        console.log(data)
         const emailTemplate =await jobApplicationStatusEmailTemplate(data?.userEmail, data?.jobTitle, status);
-        console.log(emailTemplate)
         sendEmail(data?.userEmail,"Job Status", emailTemplate);
         res.status(200).json({ success: true, message: "Job Status updated successfully", data : data });
     } catch (error) {

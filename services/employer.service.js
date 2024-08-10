@@ -76,7 +76,7 @@ export const findEmployerByuser_id = async (req, res, user_id) => {
     try {
         const employer = await EmployerProfile.findOne({ where: { user_id } });
         if (!employer) {
-            res.status(404).json([{ message: 'Employer Profile not found' }]);
+            res.status(404).json({success : false, message: 'Employer Profile not found' });
         }
         return employer;
     } catch (error) {

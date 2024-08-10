@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import User from "../models/User.js";
 import EmailTemplate from "../models/EmailTemplate.js";
 import { sendEmail } from "../utils/email.js";
-import { EMAIL_TEMPLATE_IDS } from "../Consts.js";
+import { EMAIL_TEMPLATE_IDS, EMAIL_TEMPLATE_REGISTER } from "../Consts.js";
 import { insertOtp } from "./otp.service.js";
 import { getOtpFromEmail } from "../repository/otp.repository.js";
 import { customDate } from "../utils/util.js";
@@ -145,7 +145,8 @@ const sendRegisterationOtp = async ({ name, email }) => {
     currentYear: currentYear
   };
   const templateId = EMAIL_TEMPLATE_IDS.OTP_REGISTRATION;
-  const emailTemplate = await sendEmailTemplate(templateId);
+  // const emailTemplate = await sendEmailTemplate(templateId);
+  const emailTemplate = EMAIL_TEMPLATE_REGISTER
   const subject = await replacePlaceholders(emailTemplate.subject, emailData);
   const body = await replacePlaceholders(emailTemplate.body, emailData);
 
@@ -204,3 +205,6 @@ export const findUserByJobSeekerId = async (id) => {
     return null;
   }
 }
+
+
+

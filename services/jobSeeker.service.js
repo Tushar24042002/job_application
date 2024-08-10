@@ -42,10 +42,12 @@ export const getJobSeekerById = async (req, res) => {
 export const findJobSeekerFromRequest = async (req, res) => {
   try {
     const user = await getCurrentUser(req, res);
-    console.log(user, "user")
     const jobSeeker = await findJobSeekerByuser_id(user.id);
+    if(jobSeeker === null){
+      res.status(404).json({ success : false, message: 'User Profile not found, Please Add' });
+    }
     return jobSeeker;
   } catch (error) {
-    res.status(500).json([{ message: 'Job Seeker not found' }]);
+    res.status(500).json({ message: 'Job Seeker not found' });
   }
 }

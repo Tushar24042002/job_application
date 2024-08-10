@@ -97,7 +97,6 @@ export const findJobById = async (id) => {
 
 export const jobApply = async (job_id, job_seeker_id) => {
   const status = JOB_STATUS_IDS.SUBMITTED;
-  console.log(job_id, job_seeker_id)
   const data = await AppliedJob.create({ job_id, job_seeker_id, status });
   return data;
 }
